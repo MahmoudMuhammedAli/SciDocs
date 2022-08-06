@@ -7,7 +7,6 @@ const socketio = require("socket.io");
 
 // run app on port 3001 or env port
 const port = process.env.PORT || 3002;
-app.listen(port, () => console.log(`Listening on port ${port}`));
 
 mongoose.connect("mongodb://localhost/google-docs-clone", {
   useUnifiedTopology: true,
@@ -45,3 +44,8 @@ async function findOrCreateDocument(id) {
   if (document) return document;
   return await Document.create({ _id: id, data: defaultValue });
 }
+
+app.get("/", (req, res) => {
+  res.send("Server is running");
+});
+app.listen(port, () => console.log(`Listening on port ${port}`));
