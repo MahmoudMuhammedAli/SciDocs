@@ -26,9 +26,10 @@ const io = require("socket.io")(port, {
 const defaultValue = "";
 
 io.on("connection", (socket) => {
-  socket.on("get-document", async (documentId) => {
+  socket.on("get-document", async (documentId, username) => {
     const document = await findOrCreateDocument(documentId);
     socket.join(documentId);
+    socket.broadcast.to(documentId).emit("user-joined-current-room", username);
     socket.emit("load-document", document.data);
 
     socket.on("send-changes", (delta) => {
@@ -54,4 +55,3 @@ app.get("/", (req, res) => {
   console.log("Server is running");
   console.log(io);
 });
-// app.listen(port, () => console.log(`Listening on port ${port}`));

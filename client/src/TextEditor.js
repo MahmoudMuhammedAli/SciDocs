@@ -34,17 +34,30 @@ export default function TextEditor() {
   useEffect(
     () => {
       if (socket == null || quill == null) return;
-
       socket.once("load-document", (document) => {
         quill.setContents(document);
         quill.enable();
       });
 
-      socket.emit("get-document", documentId);
+      socket.emit("get-document", documentId, "mahmoud");
     },
     [ socket, quill, documentId ]
   );
 
+  useEffect(
+    () => {
+      if (socket == null || quill == null) return;
+
+      socket.on("user-joined-current-room", (user) => {
+        console.log(user + " joined the room");
+      });
+
+      return () => {
+        socket.off("user-joined-current-room");
+      };
+    },
+    [ socket, quill ]
+  );
   useEffect(
     () => {
       if (socket == null || quill == null) return;
