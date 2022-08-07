@@ -10,8 +10,18 @@ import Login from "./pages/Login";
 import "./index.css";
 import { UserContext } from "./context/UserContext";
 function App() {
+  const [ globalUsername, setGlobalUsername ] = React.useState("");
+  const [ globalDocumentId, setGlobalDocumentId ] = React.useState("");
+
   return (
-    <UserContext.Provider value={{ username: "" }}>
+    <UserContext.Provider
+      value={{
+        globalUsername,
+        setGlobalUsername,
+        globalDocumentId,
+        setGlobalDocumentId,
+      }}
+    >
       <Router>
         <Routes>
           {/* <Route path="/" element={<Navigate to={`/documents/${uuidV4()}`} />} /> */}

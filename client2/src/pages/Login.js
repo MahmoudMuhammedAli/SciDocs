@@ -1,9 +1,13 @@
 import React from "react";
 import Typewriter from "typewriter-effect";
 import Lottie from "lottie-react";
-import typing from "../assets/typing.json";
 import working from "../assets/working.json";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
+
 export default function Login() {
+  const { user } = useContext(UserContext);
+  const [ username, setUsername ] = React.useState("");
   return (
     <div className="min-h-screen ">
       <div className="hidden lg:flex flex-row p-5 justify-between items-center">
@@ -37,16 +41,24 @@ export default function Login() {
             <p className="text-gray-800 text-lg">
               Collaborate on scientific documents and share them with the world.
             </p>
-            <h2 className="text-3xl text-red-600 text-center font-semibold w-full mt-9">
-              Get Started Now
+            <h2 className="text-3xl text-orange-600 text-center font-bold w-full mt-12 mb-6">
+              Get Started <span className="text-red-600">Now</span>
             </h2>
-            <p className="text-gray-900 text-lg ">Enter your name</p>
+            <p className=" text-lg  text-gray-900">Enter your name</p>
             <input
               id="name"
               type="text"
               placeholder="Name"
-              class="input w-full max-w-xs input-ghost input-bordered"
+              class="p-4 rounded-xl max-w-xs w-full border-2 border-orange-600 focus:border-orange-600 text-gray-900"
+              onChange={(e) => setUsername(e.target.value)}
+              value={username}
             />
+            <button
+              class="btn  mt-3 bg-orange-600 border-orange-600 text-white"
+              disabled={username === ""}
+            >
+              Start Editing
+            </button>
           </div>
         </div>
         <div className="flex  lg:w-[70%] justify-center items-end">
