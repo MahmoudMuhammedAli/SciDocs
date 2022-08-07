@@ -1,11 +1,12 @@
-import TextEditor from "./TextEditor"
+import TextEditor from "./pages/TextEditor";
 import {
   BrowserRouter as Router,
   Switch,
   Route,
   Redirect,
-} from "react-router-dom"
-import { v4 as uuidV4 } from "uuid"
+} from "react-router-dom";
+import { v4 as uuidV4 } from "uuid";
+import Login from "./pages/Login";
 
 function App() {
   return (
@@ -17,9 +18,12 @@ function App() {
         <Route path="/documents/:id">
           <TextEditor />
         </Route>
+        <Route path="/login">
+          <Login />
+        </Route>
       </Switch>
     </Router>
-  )
+  );
 }
 
-export default App
+export default App;
