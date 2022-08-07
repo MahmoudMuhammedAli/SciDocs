@@ -23,9 +23,9 @@ export default function TextEditor() {
   const [ quill, setQuill ] = useState();
 
   useEffect(() => {
-    const s = io("http://localhost:4545");
+    const s = io("http://localhost:3002");
     setSocket(s);
-
+    console.log("connected to socket");
     return () => {
       s.disconnect();
     };

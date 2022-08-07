@@ -3,7 +3,8 @@ const Document = require("./Document");
 const express = require("express");
 const app = express();
 const http = require("http");
-const socketio = require("socket.io");
+// const socketio = require("socket.io");
+const cors = require("cors");
 
 // run app on port 3001 or env port
 const port = process.env.PORT || 3002;
@@ -13,12 +14,15 @@ mongoose.connect("mongodb://localhost/google-docs-clone", {
   useNewUrlParser: true,
 });
 
+app.use(cors());
 const server = http.createServer(app);
-const io = socketio(server, {
+const io = require("socket.io")(port, {
   cors: {
-    origin: "*",
+    origin: "http://localhost:3000",
+    methods: [ "GET", "POST" ],
   },
 });
+
 const defaultValue = "";
 
 io.on("connection", (socket) => {
@@ -47,5 +51,7 @@ async function findOrCreateDocument(id) {
 
 app.get("/", (req, res) => {
   res.send("Server is running");
+  console.log("Server is running");
+  console.log(io);
 });
-app.listen(port, () => console.log(`Listening on port ${port}`));
+// app.listen(port, () => console.log(`Listening on port ${port}`));
