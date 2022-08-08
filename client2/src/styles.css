@@ -62,3 +62,9 @@ div.ql-toolbar.ql-snow{
     display: none;
   }
 }
+/*when screen is smaller that 500px hide #root > div.container.w-screen > div.ql-toolbar.ql-snow > span:nth-child(1) > span */
+@media screen and (max-width: 500px) {
+  #root > div.container.w-screen > div.ql-toolbar.ql-snow > span:nth-child(1) > span  , #root > div.container.w-screen > div.ql-toolbar.ql-snow > span:nth-child(2) > span {
+    display: none;
+  }
+}
