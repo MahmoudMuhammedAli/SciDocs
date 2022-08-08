@@ -34,21 +34,41 @@ const io = require("socket.io")(port, {
 });
 
 const defaultValue = "";
+let users = {};
+let userList;
 
 io.on("connection", (socket) => {
   socket.on("get-document", async (documentId, username) => {
     const document = await findOrCreateDocument(documentId);
+    socket.username = username;
     socket.join(documentId);
+    // add user to users[document] if there is no user with the same username in the document
+    if (
+      !users[documentId] ||
+      !users[documentId].find((user) => user.username === username)
+    ) {
+      users[documentId] = users[documentId] || [];
+      users[documentId].push(username);
+    }
+
     socket.broadcast.to(documentId).emit("user-joined-current-room", username);
     console.log(username + " joined the room");
     socket.emit("load-document", document.data);
-
     socket.on("send-changes", (delta) => {
       socket.broadcast.to(documentId).emit("receive-changes", delta);
     });
 
     socket.on("save-document", async (data) => {
       await Document.findByIdAndUpdate(documentId, { data });
+    });
+    socket.on("get-users", (documentId) => {
+      console.log(users[documentId]);
+      socket.emit("current-users", users[documentId]);
+    });
+    socket.on("disconnect", () => {
+      socket.broadcast.to(documentId).emit("user-left-current-room", username);
+      console.log(username + " left the room");
+      users[documentId] = users[documentId].filter((user) => user !== username);
     });
   });
 });
