@@ -120,5 +120,5 @@ export default function TextEditor() {
     q.setText("Loading...");
     setQuill(q);
   }, []);
-  return <div className="container" ref={wrapperRef} />;
+  return <div className="container w-full" ref={wrapperRef} />;
 }

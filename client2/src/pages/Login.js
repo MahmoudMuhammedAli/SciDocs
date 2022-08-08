@@ -1,13 +1,37 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Typewriter from "typewriter-effect";
 import Lottie from "lottie-react";
 import working from "../assets/working.json";
 import { useContext } from "react";
 import { UserContext } from "../context/UserContext";
+import { v4 as uuidV4 } from "uuid";
+import { useNavigate } from "react-router-dom";
 
 export default function Login() {
-  const { user } = useContext(UserContext);
+  let navigate = useNavigate();
+  const {
+    globalUsername,
+    setGlobalUsername,
+    globalDocumentID,
+    setGlobalDocumentID,
+  } = useContext(UserContext);
+
   const [ username, setUsername ] = React.useState("");
+
+  const handleLogin = () => {
+    setGlobalUsername(username);
+    if (!globalDocumentID) {
+      setGlobalDocumentID(uuidV4());
+    }
+  };
+  useEffect(
+    () => {
+      if (globalUsername != "" && globalDocumentID != "") {
+        navigate("/documents/" + globalDocumentID);
+      }
+    },
+    [ globalUsername, globalDocumentID, navigate ]
+  );
   return (
     <div className="min-h-screen ">
       <div className="hidden lg:flex flex-row p-5 justify-between items-center">
@@ -49,13 +73,14 @@ export default function Login() {
               id="name"
               type="text"
               placeholder="Name"
-              class="p-4 rounded-xl max-w-xs w-full border-2 border-orange-600 focus:border-orange-600 text-gray-900"
+              className="p-4 rounded-xl max-w-xs w-full border-2 border-orange-600 focus:border-orange-600 text-gray-900"
               onChange={(e) => setUsername(e.target.value)}
               value={username}
             />
             <button
-              class="btn  mt-3 bg-orange-600 border-orange-600 text-white"
+              className="btn  mt-3 bg-orange-600 border-orange-600 text-white"
               disabled={username === ""}
+              onClick={handleLogin}
             >
               Start Editing
             </button>
