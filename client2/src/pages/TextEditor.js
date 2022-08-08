@@ -64,7 +64,7 @@ export default function TextEditor() {
     [ documentId, globalUsername, navigate, updateGlobalDocumentID ]
   );
   useEffect(() => {
-    const s = io("http://localhost:3002");
+    const s = io("https://scidox.herokuapp.com/");
     setSocket(s);
     console.log("connected to socket");
     openConnectedAlert();
