@@ -249,7 +249,7 @@ export default function TextEditor() {
         </div>
       </div>
       <div
-        className={`fixed  top-72 w-72 min-h-40 bg-red-600 rounded-r-2xl p-2 ${showRoomDetails
+        className={`fixed  top-72 w-72 min-h-40 bg-orange-600 rounded-r-2xl p-2 ${showRoomDetails
           ? "left-0"
           : "-left-56"} transition `}
         onClick={() => setShowRoomDetails(!showRoomDetails)}
