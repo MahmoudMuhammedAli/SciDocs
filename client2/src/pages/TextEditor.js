@@ -120,17 +120,13 @@ export default function TextEditor() {
         socket.emit("get-users", documentId);
       }, SAVE_INTERVAL_MS);
       socket.on("current-users", (users) => {
-        // user will look something like this ["user1", "user1", "user1" , "user2", "user3"]. We want to remove duplicates and sort the array.
         const uniqueUsers = [ ...new Set(users) ].sort();
-        // create an array of objects on the template of { username: "", avatar: generator.generateRandomAvatar(user) }
-        console.log(uniqueUsers);
         const x = uniqueUsers.map((user) => ({
           name: user,
           avatar: generator.generateRandomAvatar(user),
         }));
         setConnectedUsers(x);
       });
-      console.log("connected", connectedUsers);
 
       return () => {
         clearInterval(interval);
