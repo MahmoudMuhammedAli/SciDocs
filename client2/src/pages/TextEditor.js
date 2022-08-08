@@ -170,7 +170,7 @@ export default function TextEditor() {
     <div className={`alert alert-warning shadow-lg sticky bottom-0 transition ${showIncomingUserAlert?"opacity-100":"opacity-0" }`}>
       <div>
         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-        <span className="">{incomingUser} just joined your document. you can collaborate together on it.</span>
+        <span className=""> <span className="font-bold">{incomingUser} </span>just joined your document. you can collaborate together on it.</span>
       </div>
     </div>
     <div className={`alert alert-success shadow-lg sticky  transition ${showConnectedAlert?"opacity-100":"opacity-0" }  ${showIncomingUserAlert?"bottom-20":"bottom-0" }`}>
