@@ -9,21 +9,40 @@ import { v4 as uuidV4 } from "uuid";
 import Login from "./pages/Login";
 import "./index.css";
 import { UserContext } from "./context/UserContext";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ErrorBoundary from "./components/ErrorBoundary";
 
 function App() {
   const [ globalUsername, setGlobalUsername ] = useState("");
   const [ globalDocumentID, setGlobalDocumentID ] = useState("");
-
+  const updateGlobalUsername = (username) => {
+    localStorage.setItem("globalUserName", JSON.stringify(username));
+    setGlobalUsername(username);
+  };
+  const updateGlobalDocumentID = (documentId) => {
+    localStorage.setItem("globalDocumentID", JSON.stringify(documentId));
+    setGlobalDocumentID(documentId);
+  };
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("globalUserName"));
+    if (stored) {
+      setGlobalUsername(stored);
+    }
+  }, []);
+  useEffect(() => {
+    const stored = JSON.parse(localStorage.getItem("globalDocumentID"));
+    if (stored) {
+      setGlobalDocumentID(stored);
+    }
+  }, []);
   return (
     <ErrorBoundary>
       <UserContext.Provider
         value={{
           globalUsername,
-          setGlobalUsername,
+          updateGlobalUsername,
           globalDocumentID,
-          setGlobalDocumentID,
+          updateGlobalDocumentID,
         }}
       >
         <Router>

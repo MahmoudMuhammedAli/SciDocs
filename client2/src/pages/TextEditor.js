@@ -10,6 +10,7 @@ import { v4 as uuidV4 } from "uuid";
 import { useNavigate } from "react-router-dom";
 
 const SAVE_INTERVAL_MS = 2000;
+const ALERTS_TTL = 1000;
 const TOOLBAR_OPTIONS = [
   [ { header: [ 1, 2, 3, 4, 5, 6, false ] } ],
   [ { font: [] } ],
@@ -26,28 +27,50 @@ export default function TextEditor() {
   const { id: documentId } = useParams();
   const [ socket, setSocket ] = useState();
   const [ quill, setQuill ] = useState();
+  const [ showConnectedAlert, setShowConnectedAlert ] = useState();
+  const [ showDisconnectedAlert, setShowDisconnectedAlert ] = useState();
+  const [ showIncomingUserAlert, setShowIncomingUserAlert ] = useState();
+  const [ incomingUser, setIncomingUser ] = useState();
+  const openConnectedAlert = () => {
+    setShowConnectedAlert(true);
+    setTimeout(() => {
+      setShowConnectedAlert(false);
+    }, ALERTS_TTL);
+  };
+  const openDisconnectedAlert = () => {
+    setShowDisconnectedAlert(true);
+    setTimeout(() => {
+      setShowDisconnectedAlert(false);
+    }, ALERTS_TTL);
+  };
+  const openIncomingUserAlert = (user) => {
+    setIncomingUser(user);
+    setShowIncomingUserAlert(true);
+    setTimeout(() => {
+      setShowIncomingUserAlert(false);
+    }, ALERTS_TTL + 3000);
+  };
+
   let navigate = useNavigate();
-  const {
-    globalUsername,
-    setGlobalUsername,
-    globalDocumentID,
-    setGlobalDocumentID,
-  } = useContext(UserContext);
+
+  const { globalUsername, updateGlobalDocumentID } = useContext(UserContext);
   useEffect(
     () => {
-      setGlobalDocumentID(documentId);
+      updateGlobalDocumentID(documentId);
       if (!globalUsername) {
         navigate("/login");
       }
     },
-    [ documentId, globalUsername, navigate, setGlobalDocumentID ]
+    [ documentId, globalUsername, navigate, updateGlobalDocumentID ]
   );
   useEffect(() => {
     const s = io("http://localhost:3002");
     setSocket(s);
     console.log("connected to socket");
+    openConnectedAlert();
     return () => {
       s.disconnect();
+      openDisconnectedAlert();
     };
   }, []);
 
@@ -59,9 +82,9 @@ export default function TextEditor() {
         quill.enable();
       });
 
-      socket.emit("get-document", documentId, "mahmoud");
+      socket.emit("get-document", documentId, globalUsername );
     },
-    [ socket, quill, documentId ]
+    [ socket, quill, documentId , globalUsername ]
   );
 
   useEffect(
@@ -70,6 +93,7 @@ export default function TextEditor() {
 
       socket.on("user-joined-current-room", (user) => {
         console.log(user + " joined the room");
+        openIncomingUserAlert(user);
       });
 
       return () => {
@@ -140,5 +164,28 @@ export default function TextEditor() {
     q.setText("Loading...");
     setQuill(q);
   }, []);
-  return <div className="container w-full" ref={wrapperRef} />;
+  return (
+  <>
+    <div className="container w-screen" ref={wrapperRef} />
+    <div className={`alert alert-warning shadow-lg sticky bottom-0 transition ${showIncomingUserAlert?"opacity-100":"opacity-0" }`}>
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span className="">{incomingUser} just joined your document. you can collaborate together on it.</span>
+      </div>
+    </div>
+    <div className={`alert alert-success shadow-lg sticky  transition ${showConnectedAlert?"opacity-100":"opacity-0" }  ${showIncomingUserAlert?"bottom-20":"bottom-0" }`}>
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span className="">Connected to the servers</span>
+      </div> 
+    </div>
+    {/* <div className={`alert alert-error shadow-lg sticky bottom-0 transition ${showDisconnectedAlert?"opacity-100":"opacity-0" }`}>
+      <div>
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="stroke-current flex-shrink-0 w-6 h-6"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span className=""> You have been disconnected. Please reload your page</span>
+      </div>
+    </div> */}
+  </>
+    
+  );
 }

@@ -15,8 +15,14 @@ body {
   margin: 1rem;
   box-shadow: 0 0 5px 0 rgba(0, 0, 0, .5);
   background-color: white;
+  
 }
-
+div.ql-toolbar.ql-snow{
+  width: 100vw;
+}
+#root > div > div.ql-container.ql-snow {
+  width: 100vw;
+}
 .container .ql-container.ql-snow {
   border: none;
   display: flex;

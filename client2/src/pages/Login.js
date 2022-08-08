@@ -11,17 +11,17 @@ export default function Login() {
   let navigate = useNavigate();
   const {
     globalUsername,
-    setGlobalUsername,
+    updateGlobalUsername,
     globalDocumentID,
-    setGlobalDocumentID,
+    updateGlobalDocumentID,
   } = useContext(UserContext);
 
   const [ username, setUsername ] = React.useState("");
 
   const handleLogin = () => {
-    setGlobalUsername(username);
+    updateGlobalUsername(username);
     if (!globalDocumentID) {
-      setGlobalDocumentID(uuidV4());
+      updateGlobalDocumentID(uuidV4());
     }
   };
   useEffect(
