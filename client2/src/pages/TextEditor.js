@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 import Quill from "quill";
 import "quill/dist/quill.snow.css";
 import { io } from "socket.io-client";
@@ -25,7 +25,7 @@ const TOOLBAR_OPTIONS = [
 ];
 
 export default function TextEditor() {
-  const generator = new AvatarGenerator();
+  const generator = useMemo(() => new AvatarGenerator(), []);
   const { globalUsername, updateGlobalDocumentID } = useContext(UserContext);
   const { id: documentId } = useParams();
   const [ socket, setSocket ] = useState();
@@ -35,7 +35,12 @@ export default function TextEditor() {
   const [ showIncomingUserAlert, setShowIncomingUserAlert ] = useState();
   const [ showRoomDetails, setShowRoomDetails ] = useState(false);
   const [ incomingUser, setIncomingUser ] = useState();
-  const [ connectedUsers, setConnectedUsers ] = useState([]);
+  const [ connectedUsers, setConnectedUsers ] = useState([
+    {
+      username: globalUsername,
+      avatar: generator.generateRandomAvatar(globalUsername),
+    },
+  ]);
   const openConnectedAlert = () => {
     setShowConnectedAlert(true);
     setTimeout(() => {
