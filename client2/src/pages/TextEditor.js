@@ -4,6 +4,11 @@ import "quill/dist/quill.snow.css";
 import { io } from "socket.io-client";
 import { useParams } from "react-router-dom";
 import "../styles.css";
+import { useContext } from "react";
+import { UserContext } from "../context/UserContext";
+import { v4 as uuidV4 } from "uuid";
+import { useNavigate } from "react-router-dom";
+
 const SAVE_INTERVAL_MS = 2000;
 const TOOLBAR_OPTIONS = [
   [ { header: [ 1, 2, 3, 4, 5, 6, false ] } ],
@@ -21,7 +26,22 @@ export default function TextEditor() {
   const { id: documentId } = useParams();
   const [ socket, setSocket ] = useState();
   const [ quill, setQuill ] = useState();
-
+  let navigate = useNavigate();
+  const {
+    globalUsername,
+    setGlobalUsername,
+    globalDocumentID,
+    setGlobalDocumentID,
+  } = useContext(UserContext);
+  useEffect(
+    () => {
+      setGlobalDocumentID(documentId);
+      if (!globalUsername) {
+        navigate("/login");
+      }
+    },
+    [ documentId, globalUsername, navigate, setGlobalDocumentID ]
+  );
   useEffect(() => {
     const s = io("http://localhost:3002");
     setSocket(s);
