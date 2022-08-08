@@ -19,7 +19,7 @@ export default function Login() {
         <div className=" flex w-full lg:w-[80%] justify-center p-10 lg:p-0">
           <div className="flex flex-col justify-center items-start gap-2">
             <h1 className="text-orange-600 text-4xl lg:text-7xl font-bold flex flex-row items-end gap-3 w-full mb-2 text-center lg:text-start ">
-              SciDox{" "}
+              SciDox
               <span className="text-red-600 text-2xl lg:text-5xl">
                 <Typewriter
                   onInit={(typewriter) => {
